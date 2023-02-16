@@ -3,7 +3,7 @@
 
 
 import redis
-from typing import Any, Union
+from typing import Any, Union, Callable
 import uuid
 
 
@@ -19,3 +19,19 @@ class Cache:
         key = str(uuid.uuid4())
         self._redis.set(key, data)
         return(key)
+
+    def get(self, key: str, fn: Callable = None) -> Any:
+        """convert a value to a custom type"""
+        val = self._redis.get(key)
+        if fn is None:
+            return(val)
+        val = fn(val)
+        return val
+
+    def get_str(self) -> Callable:
+        """return the conversion function for a string"""
+        return lambda x: str(x)
+
+    def get_int(self) -> Callable:
+        """return the conversion function for an int"""
+        return lambda x: int(x)
