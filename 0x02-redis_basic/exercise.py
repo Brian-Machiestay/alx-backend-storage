@@ -32,7 +32,6 @@ class Cache:
         self._redis.set(key, data)
         return(key)
 
-    @count_calls
     def get(self, key: str, fn: Callable = None) -> Any:
         """convert a value to a custom type"""
         val = self._redis.get(key)
@@ -41,12 +40,10 @@ class Cache:
         val = fn(val)
         return val
 
-    @count_calls
     def get_str(self) -> Callable:
         """return the conversion function for a string"""
         return lambda x: str(x)
 
-    @count_calls
     def get_int(self) -> Callable:
         """return the conversion function for an int"""
         return lambda x: int(x)
