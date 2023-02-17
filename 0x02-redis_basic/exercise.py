@@ -26,7 +26,7 @@ def call_history(method: Callable) -> Callable:
         method_name_in = method.__qualname__ + ':inputs'
         method_name_out = method.__qualname__ + ':outputs'
         redis = args[0]._redis
-        redis.rpush(method_name_in, str(args))
+        redis.rpush(method_name_in, str((args[1],)))
         result = method(*args, **kwargs)
         args[0]._redis.rpush(method_name_out, result)
         return result
