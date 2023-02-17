@@ -8,6 +8,19 @@ import uuid
 from functools import wraps
 
 
+def replay(method):
+    """displays history of this method"""
+    outputs = method.__qualname__ + ':outputs'
+    keys = method.__self__._redis.lrange(outputs, 0, -1)
+    print('{} was called {} times:'.format(method.__qualname__, len(keys)))
+    for key in keys:
+        actual_key = key.decode('utf-8')
+        val = method.__self__.get(
+            actual_key, lambda x: x.decode('utf-8'))
+        print("{}(*('{}',)) -> {}".format(
+            method.__qualname__, val, actual_key))
+
+
 def count_calls(method: Callable) -> Callable:
     """a decorator function that counts calls to Cache"""
     @wraps(method)
