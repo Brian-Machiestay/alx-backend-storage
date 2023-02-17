@@ -25,7 +25,8 @@ def call_history(method: Callable) -> Callable:
         """the wrapper class"""
         method_name_in = method.__qualname__ + ':inputs'
         method_name_out = method.__qualname__ + ':outputs'
-        args[0]._redis.rpush(method_name_in, str(args[1]))
+        redis = args[0]._redis
+        redis.rpush(method_name_in, str(args[1]))
         result = method(*args, **kwargs)
         args[0]._redis.rpush(method_name_out, result)
         return result
